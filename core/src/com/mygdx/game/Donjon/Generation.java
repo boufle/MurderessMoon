@@ -16,7 +16,6 @@ public class Generation {
 
         int seed = 4000 + (int) (Math.random() * 600000);
         Donjon dj =  new Donjon(seed);
-
         return dj;
     }
 }

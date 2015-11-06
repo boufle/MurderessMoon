@@ -3,12 +3,11 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.mygdx.game.Animation.MenuShadowAnimation;
 import com.mygdx.game.Characters.Isaac;
 import com.mygdx.game.Event.EventMenuListener;
@@ -20,6 +19,8 @@ import com.mygdx.game.MurderessMoon;
  */
 public class MenuScreen implements Screen {
 
+    private   BitmapFont fontmenu;
+    private   BitmapFont font;
     SpriteBatch batch;
     Texture img;
     Texture img2;
@@ -47,7 +48,10 @@ public class MenuScreen implements Screen {
             }
         }
 
+        font = new BitmapFont();
+         fontmenu = new BitmapFont( );
 
+        fontmenu.setColor(Color.GRAY);
         TextureRegion[] tmpAnimation = menuShadowAnimation.BlitteringShadow();
         shadowAnimation = new Animation(0.100f,tmpAnimation);
         stateTime = 0f;
@@ -71,7 +75,13 @@ public class MenuScreen implements Screen {
         batch.begin();
         batch.draw(img, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //batch.draw(test[1],0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        fontmenu.draw(batch, "APUYER SUR ESPACE " , 600, 400);
+        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 40);
         batch.draw(currentFrame,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
+
+
+
         batch.end();
         Gdx.input.setInputProcessor(new EventMenuListener(this));
         /*if (Gdx.input.isKeyPressed(Input.Keys.SPACE))

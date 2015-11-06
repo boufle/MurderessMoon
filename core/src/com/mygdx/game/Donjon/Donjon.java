@@ -12,6 +12,7 @@ import java.util.ArrayList;
  */
 public class Donjon implements Serializable {
     ArrayList<Floor> floors = new ArrayList<Floor>();
+    Integer current = 1;
     Integer seed ;
 
     public Donjon(Integer seed){

@@ -1,7 +1,9 @@
 package com.mygdx.game.Event;
 
 import com.badlogic.gdx.InputProcessor;
+import com.mygdx.game.Donjon.Generation;
 import com.mygdx.game.screen.Game1;
+import com.mygdx.game.screen.LoadingScreen;
 import com.mygdx.game.screen.MenuScreen;
 
 /**
@@ -27,9 +29,10 @@ public class EventMenuListener implements InputProcessor {
 
     @Override
     public boolean keyTyped(char character) {
-
-        if (character == 'a'){
-            menuScreen.getMurderessMoon().setScreen(new Game1(menuScreen.getMurderessMoon()));
+      //  System.out.println("character = [" + character + "]");
+        if (character == ' '){
+            menuScreen.getMurderessMoon().setScreen(new Game1(menuScreen.getMurderessMoon(), Generation.Generer()));
+          //  menuScreen.getMurderessMoon().setScreen(new LoadingScreen(menuScreen.getMurderessMoon()));
         }
         return false;
     }

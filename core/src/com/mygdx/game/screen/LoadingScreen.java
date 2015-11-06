@@ -1,15 +1,20 @@
 package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Screen;
+import com.mygdx.game.Donjon.Generation;
+import com.mygdx.game.MurderessMoon;
 
 /**
  * Created by Boufle on 02/11/2015.
  */
 public class LoadingScreen implements Screen {
 
-    public LoadingScreen(){
 
+
+    public LoadingScreen(MurderessMoon murderessMoon) {
+        murderessMoon.setScreen(new Game1(murderessMoon, Generation.Generer()));
     }
+
     @Override
     public void show() {
 

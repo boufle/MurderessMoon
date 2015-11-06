@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="2" height="2" tilewidth="234" tileheight="156" nextobjectid="1">
+ <tileset firstgid="1" name="room" tilewidth="234" tileheight="156" tilecount="6">
+  <image source="01_basement.png" width="468" height="468"/>
+ </tileset>
+ <layer name="Calque de Tile 1" width="2" height="2">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgYGRgaABiByA+AAAGuAGF
+  </data>
+ </layer>
+</map>
