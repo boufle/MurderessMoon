@@ -7,7 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Event.EventIsaacListener;
+import com.mygdx.game.TearsRender;
 
 /**
  * com.mygdx.game.Characters
@@ -137,6 +139,26 @@ public class IsaacRender implements Screen {
             //batch.draw(currentFrameDown,isaac.getX(),isaac.getY(), 64 ,64);
         }
 
+        if(isaac.attSpeedTemp !=0) {
+            isaac.attSpeedTemp --;
+        }
+
+        if(keyboard.isShootgRight  && isaac.attSpeedTemp <=0) {
+            isaac.shoot(new Vector2(1,0));
+            //batch.draw(currentFrameDown,isaac.getX(),isaac.getY(), 64 ,64);
+        }
+        if(keyboard.isShootDown  && isaac.attSpeedTemp <=0) {
+            isaac.shoot(new Vector2(0,-1));
+            //batch.draw(currentFrameDown,isaac.getX(),isaac.getY(), 64 ,64);
+        } if(keyboard.isShootLeft  && isaac.attSpeedTemp <=0) {
+            isaac.shoot(new Vector2(-1,0));
+            //batch.draw(currentFrameDown,isaac.getX(),isaac.getY(), 64 ,64);
+        }
+        if(keyboard.isShootUp  && isaac.attSpeedTemp <=0) {
+            isaac.shoot(new Vector2(0,1));
+            //batch.draw(currentFrameDown,isaac.getX(),isaac.getY(), 64 ,64);
+        }
+
 
         batch.draw(todraw,isaac.getX(),isaac.getY(), 64 ,64);
 
@@ -145,7 +167,7 @@ public class IsaacRender implements Screen {
         batch.end();
 
         batch.begin();
-        font.draw(batch, "U " +keyboard.isRunningUp +" D "+ keyboard.isRunningDown +" R "+ keyboard.isRunningRight +" L "+ keyboard.isRunningLeft+" S "+keyboard.isStay + " X" + isaac.getX() + " Y" + isaac.getY(), 10, 40);
+        font.draw(batch, "U " +keyboard.isRunningUp +" D "+ keyboard.isRunningDown +" R "+ keyboard.isRunningRight +" L "+ keyboard.isRunningLeft+" S "+keyboard.isStay + " X" + isaac.getX() + " Y" + isaac.getY() + " AS " +isaac.attSpeedTemp, 10, 40);
         batch.end();
     }
 
@@ -214,6 +236,8 @@ public class IsaacRender implements Screen {
         return MoveDown;
 
     }
+
+
 
 
 

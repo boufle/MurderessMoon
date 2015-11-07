@@ -12,6 +12,7 @@ import com.mygdx.game.Animation.MenuShadowAnimation;
 import com.mygdx.game.Characters.Isaac;
 import com.mygdx.game.Event.EventMenuListener;
 import com.mygdx.game.MurderessMoon;
+import com.mygdx.game.Particules.RandomParticules;
 
 
 /**
@@ -19,6 +20,7 @@ import com.mygdx.game.MurderessMoon;
  */
 public class MenuScreen implements Screen {
 
+    private   RandomParticules rndpart;
     private   BitmapFont fontmenu;
     private   BitmapFont font;
     SpriteBatch batch;
@@ -58,6 +60,10 @@ public class MenuScreen implements Screen {
 
 
         murderessMoon = m;
+        rndpart = new RandomParticules();
+
+
+
     }
     @Override
     public void show() {
@@ -75,14 +81,26 @@ public class MenuScreen implements Screen {
         batch.begin();
         batch.draw(img, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         //batch.draw(test[1],0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
+
         fontmenu.draw(batch, "APUYER SUR ESPACE " , 600, 400);
         font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 40);
-        batch.draw(currentFrame,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
+
+        //shader
 
 
 
 
         batch.end();
+
+        rndpart.render(delta);
+
+        batch.begin();
+        batch.draw(currentFrame,0,0,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+
+        batch.end();
+
         Gdx.input.setInputProcessor(new EventMenuListener(this));
         /*if (Gdx.input.isKeyPressed(Input.Keys.SPACE))
             murderessMoon.setScreen(new Game1(murderessMoon));*/

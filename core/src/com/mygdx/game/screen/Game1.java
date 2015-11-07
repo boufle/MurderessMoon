@@ -23,7 +23,11 @@ import com.mygdx.game.Donjon.Donjon;
 import com.mygdx.game.Event.EventIsaacListener;
 import com.mygdx.game.Event.EventMenuListener;
 import com.mygdx.game.MurderessMoon;
+import com.mygdx.game.TearsRender;
 import com.mygdx.game.room.RoomReader;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Created by Boufle on 02/11/2015.
@@ -31,8 +35,9 @@ import com.mygdx.game.room.RoomReader;
 public class Game1 implements Screen {
 
     private   RoomReader roomReader;
-    private   IsaacRender isaacRender;
+    private   Isaac isaac;
     SpriteBatch batch;
+    ArrayList<TearsRender> tearsRenders = new ArrayList<TearsRender>();
 
 
 
@@ -51,7 +56,7 @@ public class Game1 implements Screen {
 
         font = new BitmapFont();
 
-        isaacRender = new IsaacRender(new Isaac());
+        isaac =  new Isaac(this);
         roomReader = new RoomReader(dj);
 
     }
@@ -69,8 +74,18 @@ public class Game1 implements Screen {
 
         roomReader.render(delta);
 
-        isaacRender.render(delta);
+        isaac.getRender(delta);
 
+        Iterator<TearsRender> iter = tearsRenders.iterator();
+        while (iter.hasNext()) {
+            TearsRender tearsRender = iter.next();
+
+            if(!tearsRender.isdead){
+                tearsRender.render(delta);
+            }else {
+                iter.remove();
+            }
+        }
 
         batch.begin();
         font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
@@ -104,5 +119,7 @@ public class Game1 implements Screen {
 
     }
 
-
+    public ArrayList<TearsRender> getTearsRenders() {
+        return tearsRenders;
+    }
 }
