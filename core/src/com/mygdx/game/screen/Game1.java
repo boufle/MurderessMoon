@@ -1,67 +1,132 @@
 package com.mygdx.game.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.MapRenderer;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.mygdx.game.Animation.MenuShadowAnimation;
+import com.esotericsoftware.kryonet.Client;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Characters.Isaac;
 import com.mygdx.game.Characters.IsaacRender;
 import com.mygdx.game.Donjon.Donjon;
-import com.mygdx.game.Event.EventIsaacListener;
-import com.mygdx.game.Event.EventMenuListener;
 import com.mygdx.game.MurderessMoon;
-import com.mygdx.game.TearsRender;
+import com.mygdx.game.Network;
+import com.mygdx.game.UI;
 import com.mygdx.game.room.RoomReader;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.io.IOException;
 
 /**
  * Created by Boufle on 02/11/2015.
  */
 public class Game1 implements Screen {
 
-    private   AssetLoader asset;
-    private   RoomReader roomReader;
-    private   Isaac isaac;
+    private   IsaacRender isaacrenderer;
+    private RoomReader roomReader;
     SpriteBatch batch;
+    UI ui;
+    int name;
+    Client client;
 
-    public RoomReader getRoomReader() {
-        return roomReader;
-    }
+
 
     private BitmapFont font;
     float stateTime;
 
 
+    public Game1(MurderessMoon murderessMoon, Donjon dj) {
+        client = new Client();
+        client.start();
 
-    public Game1(MurderessMoon murderessMoon, Donjon dj){
+        // For consistency, the classes to be sent over the network are
+        // registered by the same method for both the client and server.
+        Network.register(client);
+
+        // ThreadedListener runs the listener methods on a different thread.
+        client.addListener(new Listener.ThreadedListener(new Listener() {
+            public void connected(Connection connection) {
+                System.out.println("connection = [" + connection + "]");
+            }
+
+            public void received(Connection connection, Object object) {
+                System.out.println("connection = [" + connection + "], object = [" + object + "]");
+                if (object instanceof Network.RegistrationRequired) {
+                    Network.Register register = new Network.Register();
+                    //register.name = get;
+                    //register.otherStuff = ui.inputOtherStuff();
+                    client.sendUDP(register);
+                }
+
+                if (object instanceof Network.AddCharacter) {
+                    Network.AddCharacter msg = (Network.AddCharacter) object;
+                    ui.addCharacter(msg.character);
+                    return;
+                }
+
+                if (object instanceof Network.UpdateCharacter) {
+                    ui.updateCharacter((Network.UpdateCharacter) object);
+                    return;
+                }
+
+                if (object instanceof Network.RoomUpdate) {
+                    ui.updateroom((Network.RoomUpdate) object);
+                    return;
+                }
+
+                if (object instanceof Network.RemoveCharacter) {
+                    Network.RemoveCharacter msg = (Network.RemoveCharacter) object;
+                    ui.removeCharacter(msg.id);
+                    return;
+                }
+            }
+
+            public void disconnected(Connection connection) {
+                System.exit(0);
+            }
+        }));
+
+        ui = new UI();
+
+        //String host = ui.inputHost();
+        String host = "78.235.55.206";
+         try {
+            client.connect(5000, host, Network.port ,Network.port  );
+            // Server communication after connection can go here, or in Listener#connected().
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        name = (int) (Math.random() * 50 + 1);
+        //name = ui.inputName();
+        Network.Login login = new Network.Login();
+        login.name = name;
+        client.sendUDP(login);
+
+       // Network.RoomUpdate upd = new Network.RoomUpdate();
+         //client.sendUDP(upd);
+
 
         batch = new SpriteBatch();
 
-        asset = new AssetLoader(dj);
 
         stateTime = 0f;
 
         font = new BitmapFont();
 
-        isaac =  new Isaac(this);
-        roomReader = new RoomReader(dj);
+        isaacrenderer = new IsaacRender();
+
+
+        //  Network.AddCharacter add = new Network.AddCharacter();
+        //add.character = isaac;
+        //client.sendUDP(add);
+
+        // ui.addCharacter(isaac);
+
+        roomReader = new RoomReader();
 
     }
+
     @Override
     public void show() {
 
@@ -74,15 +139,39 @@ public class Game1 implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
 
-       // asset.render();
-        roomReader.render(delta);
-
-        isaac.getRender(delta);
+        if (client.isConnected()) {
 
 
-        batch.begin();
-        font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
-        batch.end();
+            // asset.render();
+            if(ui.room !=null){
+                roomReader.render(delta,ui.room);
+            }
+
+
+            // System.out.println("delta = [" + ui.characters.size() + "]");
+
+
+            for (Isaac character : ui.characters.values()) {
+                //IsaacRender render = new IsaacRender(character);
+                //render.render(delta);
+
+                if(character.getId()==name){
+                    isaacrenderer.render(delta,character,true,client,this);
+                }else {
+                    isaacrenderer.render(delta,character,false, client, this);
+                }
+            }
+
+
+            batch.begin();
+            font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+            batch.end();
+        }else {
+            batch.begin();
+            font.draw(batch, "Connexion impossible " , 600, 400);
+            font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
+            batch.end();
+        }
 
 
     }
@@ -110,5 +199,9 @@ public class Game1 implements Screen {
     @Override
     public void dispose() {
 
+    }
+
+    public RoomReader getRoomReader() {
+        return roomReader;
     }
 }

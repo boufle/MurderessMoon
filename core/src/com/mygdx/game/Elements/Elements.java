@@ -10,13 +10,15 @@ import java.io.Serializable;
  */
 public abstract class Elements implements Serializable{
 
-    protected int Y;
-    protected int X;
+    protected int Y=0;
+    protected int X=0;
     private boolean bounds;
 
     public Elements(int y, int x) {
         Y = y;
         X = x;
+    }
+    public Elements() {
     }
 
     @Override

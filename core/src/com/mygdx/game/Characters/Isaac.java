@@ -5,21 +5,54 @@ import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.TearsRender;
 import com.mygdx.game.screen.Game1;
 
+import java.io.Serializable;
+
 /**
  * Created by Boufle on 02/11/2015.
  */
-public class Isaac {
+public class Isaac implements Serializable {
 
-    private   IsaacRender render;
-    protected int x , y,speed=4;
+     protected int x , y,speed=4,direction = 0;
     protected double damage = 1;
 
-
+    private int id = 0;
     protected double attSpeed = 30;
     protected int heathResist =0;
 
+    public int getDirection() {
+        return direction;
+    }
+
+    public void setDirection(int direction) {
+        this.direction = direction;
+    }
+
     public int getRange() {
         return range;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getHeath() {
+        return heath;
+    }
+
+    public double getAttSpeedTemp() {
+        return attSpeedTemp;
+    }
+
+    public int getHeathResist() {
+        return heathResist;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public double getDamage() {
+        return damage;
     }
 
     protected int range =60;
@@ -29,13 +62,21 @@ public class Isaac {
     protected int heath = 10;
 
     public int currentheath = heath;
-    private Game1 game1;
 
-    public Isaac(Game1 game1){
-        this.game1 = game1;
+
+    public Isaac(int name){
+        this.id =  name;
+        //this.game1 = game1;
         x = 588;
         y = 364;
-       render = new IsaacRender(this);
+
+    }
+    public Isaac(){
+        this.id =  (int) (Math.random() * 50 + 1);
+        //this.game1 = game1;
+        x = 588;
+        y = 364;
+
     }
 
 
@@ -65,14 +106,11 @@ public class Isaac {
         }
     }
 
-    public void getRender(float delta) {
-        render.render(delta);
-    }
 
-    public void shoot(Vector2 direction) {
+    public void shoot(Vector2 direction, Game1 game1) {
 
-        game1.getRoomReader().getTearsRenders().add( new TearsRender(this,direction));
-        this.attSpeedTemp = this.attSpeed;
+         game1.getRoomReader().getTearsRenders().add( new TearsRender(this,direction));
+         this.attSpeedTemp = this.attSpeed;
     }
 
     public void hurt(Integer damage) {
@@ -87,5 +125,7 @@ public class Isaac {
     }
 
 
-
+    public void setId(int id) {
+        this.id = id;
+    }
 }
