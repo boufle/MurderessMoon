@@ -27,6 +27,9 @@ public class Room implements Serializable {
     ArrayList<Elements> elems = new ArrayList<Elements>();
 
 
+    private String tmx = "Room/Room1.tmx";
+
+
     public Room(TypeRoom type ,Integer id, Integer X , Integer Y) {
         this.type = type;
         this.id = id;
@@ -34,7 +37,10 @@ public class Room implements Serializable {
         y = Y;
 
 
-        elems.add(new Grass(1,1));
+        elems.add(new Grass(450,800));
+        elems.add(new Grass(450+64,800));
+        elems.add(new Grass(450-64-64,800));
+        elems.add(new Grass(200,800));
 
 
 
@@ -54,6 +60,15 @@ public class Room implements Serializable {
                 '}';
     }
 
+    public Integer getX() {
+        return x;
+    }
 
+    public Integer getY() {
+        return y;
+    }
 
+    public String getTmx() {
+        return tmx;
+    }
 }

@@ -1,5 +1,7 @@
 package com.mygdx.game.Elements;
 
+import com.badlogic.gdx.math.Rectangle;
+
 import java.io.Serializable;
 
 /**
@@ -10,6 +12,7 @@ public abstract class Elements implements Serializable{
 
     protected int Y;
     protected int X;
+    private boolean bounds;
 
     public Elements(int y, int x) {
         Y = y;
@@ -23,4 +26,22 @@ public abstract class Elements implements Serializable{
                 ", X=" + X +
                 '}';
     }
+
+    public int getY() {
+        return Y;
+    }
+
+    public int getX() {
+        return X;
+    }
+
+    public abstract void render(float delta);
+
+    public Rectangle getBounds() {
+        return new Rectangle(X, Y, 64, 64);
+    }
+
+    public abstract void hit(int i);
+
+    public abstract int getheal();
 }

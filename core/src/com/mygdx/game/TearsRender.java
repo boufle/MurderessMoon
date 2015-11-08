@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.Characters.Isaac;
 
@@ -33,7 +34,7 @@ public class TearsRender implements Screen {
         batch = new SpriteBatch();
         vector2= new Vector2(is.getX(),is.getY());
         effect = new ParticleEffect();
-        effect.load(Gdx.files.internal("effects/tears.p"), Gdx.files.internal("img"));
+        effect.load(Gdx.files.internal("effects/tears2.p"), Gdx.files.internal("img"));
 
         effect.start();
 
@@ -47,20 +48,26 @@ public class TearsRender implements Screen {
     public void show() {
 
     }
+    public void hit() {
+        rangetemp= 0;
+    }
+
+
 
     @Override
     public void render(float delta) {
+
         batch.begin();
         //vector2.scl(direct);
         int speed = 6 ;
-        vector2.add(direct.x *speed, direct.y *speed );
         if(rangetemp <=0){
-            effect.setPosition(vector2.x,vector2.y);
+            effect.setPosition(vector2.x+32,vector2.y+32);
             effect.draw(batch, delta);
             if(effect.isComplete()){
                 isdead = true;
             }
         }else {
+            vector2.add(direct.x *speed, direct.y *speed );
             batch.draw(test[6],vector2.x,vector2.y, 64 ,64);
             rangetemp--;
         }
@@ -92,12 +99,18 @@ public class TearsRender implements Screen {
 
     @Override
     public void dispose() {
-
+        batch.dispose();
+        img.dispose();
+        effect.dispose();
     }
 
-
+    public Vector2 getPos() {
+        return vector2;
+    }
+    public Rectangle getBounds() {
+        return new Rectangle(vector2.x, vector2.y, 32, 32);
+    }
     public  void tears(){
-
         TextureRegion[][] tmp = TextureRegion.split(img, img.getWidth() / 8, img.getHeight() / 4);
         test = new TextureRegion[4 * 8];
         int index = 0;
@@ -106,7 +119,6 @@ public class TearsRender implements Screen {
                 test[index++] = tmp[i][j];
             }
         }
-
-
     }
+
 }

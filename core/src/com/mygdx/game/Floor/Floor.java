@@ -55,6 +55,15 @@ public class Floor implements Serializable {
 
     }
 
+    public  Room  getRm(int x , int y) {
+        for (Room room : rm) {
+            if(room.getX()== x && room.getY() == y){
+                return room;
+            }
+        }
+        return null;
+    }
+
     @Override
     public String toString() {
         return "Floor{" +

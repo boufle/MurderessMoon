@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.mygdx.game.Donjon.Generation;
+import com.mygdx.game.screen.AssetLoader;
 import com.mygdx.game.screen.Game1;
 import com.mygdx.game.screen.LoadingScreen;
 import com.mygdx.game.screen.MenuScreen;
@@ -44,8 +45,8 @@ public class EventMenuListener implements InputProcessor {
     public boolean keyTyped(char character) {
       //  System.out.println("character = [" + character + "]");
         if (character == ' '){
+            //  menuScreen.getMurderessMoon().setScreen(new AssetLoader(menuScreen.getMurderessMoon(), Generation.Generer()));
             menuScreen.getMurderessMoon().setScreen(new Game1(menuScreen.getMurderessMoon(), Generation.Generer()));
-           // menuScreen.getMurderessMoon().setScreen(new Game1(menuScreen.getMurderessMoon(), Generation.Generer()));
           //  menuScreen.getMurderessMoon().setScreen(new LoadingScreen(menuScreen.getMurderessMoon()));
         }
         return false;

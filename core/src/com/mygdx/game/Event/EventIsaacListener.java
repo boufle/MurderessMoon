@@ -27,7 +27,7 @@ public class EventIsaacListener implements InputProcessor {
     public boolean keyDown(int keycode) {
 
 
-        System.out.println(keycode);
+       // System.out.println(keycode);
         if (keycode == 22 || keycode == 21 || keycode == 20 || keycode == 19) {
             isShootgRight = false;
             isShootLeft = false;

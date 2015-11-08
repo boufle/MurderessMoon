@@ -22,6 +22,14 @@ public class Donjon implements Serializable {
         }
     }
 
+    public ArrayList<Floor> getFloors() {
+        return floors;
+    }
+
+    public Integer getCurrent() {
+        return current;
+    }
+
     @Override
     public String toString() {
         return "Donjon{" +

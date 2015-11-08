@@ -34,12 +34,14 @@ import java.util.Iterator;
  */
 public class Game1 implements Screen {
 
+    private   AssetLoader asset;
     private   RoomReader roomReader;
     private   Isaac isaac;
     SpriteBatch batch;
-    ArrayList<TearsRender> tearsRenders = new ArrayList<TearsRender>();
 
-
+    public RoomReader getRoomReader() {
+        return roomReader;
+    }
 
     private BitmapFont font;
     float stateTime;
@@ -50,7 +52,7 @@ public class Game1 implements Screen {
 
         batch = new SpriteBatch();
 
-
+        asset = new AssetLoader(dj);
 
         stateTime = 0f;
 
@@ -72,20 +74,11 @@ public class Game1 implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stateTime += Gdx.graphics.getDeltaTime();
 
+       // asset.render();
         roomReader.render(delta);
 
         isaac.getRender(delta);
 
-        Iterator<TearsRender> iter = tearsRenders.iterator();
-        while (iter.hasNext()) {
-            TearsRender tearsRender = iter.next();
-
-            if(!tearsRender.isdead){
-                tearsRender.render(delta);
-            }else {
-                iter.remove();
-            }
-        }
 
         batch.begin();
         font.draw(batch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 10, 20);
@@ -117,9 +110,5 @@ public class Game1 implements Screen {
     @Override
     public void dispose() {
 
-    }
-
-    public ArrayList<TearsRender> getTearsRenders() {
-        return tearsRenders;
     }
 }

@@ -16,7 +16,7 @@ public class Isaac {
 
 
     protected double attSpeed = 30;
-    protected double attSpeedTemp =0;
+    protected int heathResist =0;
 
     public int getRange() {
         return range;
@@ -24,7 +24,11 @@ public class Isaac {
 
     protected int range =60;
 
+
+    protected double attSpeedTemp =0;
     protected int heath = 10;
+
+    public int currentheath = heath;
     private Game1 game1;
 
     public Isaac(Game1 game1){
@@ -67,7 +71,21 @@ public class Isaac {
 
     public void shoot(Vector2 direction) {
 
-      game1.getTearsRenders().add( new TearsRender(this,direction));
+        game1.getRoomReader().getTearsRenders().add( new TearsRender(this,direction));
         this.attSpeedTemp = this.attSpeed;
     }
+
+    public void hurt(Integer damage) {
+        if(heathResist<= 0){
+
+            currentheath-=damage;
+            heathResist = 60 ;
+        }
+
+       // game1.getTearsRenders().add( new TearsRender(this,direction));
+       // this.attSpeedTemp = this.attSpeed;
+    }
+
+
+
 }

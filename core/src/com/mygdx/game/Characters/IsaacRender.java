@@ -2,12 +2,13 @@ package com.mygdx.game.Characters;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.mygdx.game.Event.EventIsaacListener;
 import com.mygdx.game.TearsRender;
 
@@ -16,22 +17,24 @@ import com.mygdx.game.TearsRender;
  * Created by Theo on 06/11/2015 for MurderessMoon.
  */
 public class IsaacRender implements Screen {
+    private   TextureRegion[] heath;
+    private  Animation HeadFrontAnimation;
     private   SpriteBatch batch;
     private   BitmapFont font;
     Animation MoveRightAnimation;
     Animation MoveDownAnimation;
     Animation StayAnimation;
     Animation MoveUpAnimation;
-    Animation MoveLeftAnimation;
 
-    TextureRegion[] test;
 
 
     TextureRegion[] MoveRight = new TextureRegion[10];
     TextureRegion[] MoveDown = new TextureRegion[8];
     TextureRegion[] moveUp = new TextureRegion[8];
     TextureRegion[] Stay = new TextureRegion[1];
-    TextureRegion[] MoveLeft = new TextureRegion[10];
+
+    TextureRegion[] HeadFront = new TextureRegion[2];
+
 
     TextureRegion currentFrame;
 
@@ -46,6 +49,11 @@ public class IsaacRender implements Screen {
     private Isaac isaac;
     EventIsaacListener keyboard = new EventIsaacListener();
     private TextureRegion currentFrametemp ;
+    private TextureRegion currentFrameHeadFront;
+
+
+
+
 
     public IsaacRender(Isaac isaac) {
         this.isaac = isaac;
@@ -66,8 +74,16 @@ public class IsaacRender implements Screen {
         TextureRegion[] moveUp = moveUp();
         MoveUpAnimation = new Animation(0.100f,moveUp);
 
-        TextureRegion[] moveLeft = moveRight();
-        MoveLeftAnimation = new Animation(0.100f,moveLeft);
+
+        TextureRegion[] headFront = headFront();
+        HeadFrontAnimation = new Animation(0.100f,headFront);
+
+
+         heath = heath(new Texture("spirits\\ui_hearts.png"));
+
+
+
+
     }
 
     @Override
@@ -84,8 +100,10 @@ public class IsaacRender implements Screen {
         currentFrameDown = MoveDownAnimation.getKeyFrame(stateTime, true);
         currentFrameStay = StayAnimation.getKeyFrame(stateTime,true);
         currentFrameUp = MoveUpAnimation.getKeyFrame(stateTime,true);
+        currentFrameHeadFront = HeadFrontAnimation.getKeyFrame(stateTime,true);
         //currentFrampLeft = MoveLeftAnimation.getKeyFrame(stateTime,true);
         TextureRegion todraw =currentFrameStay;
+        TextureRegion todraw2 =HeadFrontAnimation.getKeyFrames()[0];
         batch.begin();
 
         if (keyboard.isStay ||  (keyboard.isRunningLeft&&keyboard.isRunningRight) || (keyboard.isRunningUp&&keyboard.isRunningDown)  ){
@@ -140,8 +158,12 @@ public class IsaacRender implements Screen {
         }
 
         if(isaac.attSpeedTemp !=0) {
+
+            todraw2 =HeadFrontAnimation.getKeyFrames()[1];
+
             isaac.attSpeedTemp --;
         }
+
 
         if(keyboard.isShootgRight  && isaac.attSpeedTemp <=0) {
             isaac.shoot(new Vector2(1,0));
@@ -149,26 +171,50 @@ public class IsaacRender implements Screen {
         }
         if(keyboard.isShootDown  && isaac.attSpeedTemp <=0) {
             isaac.shoot(new Vector2(0,-1));
+            todraw2 =HeadFrontAnimation.getKeyFrames()[1];
             //batch.draw(currentFrameDown,isaac.getX(),isaac.getY(), 64 ,64);
         } if(keyboard.isShootLeft  && isaac.attSpeedTemp <=0) {
             isaac.shoot(new Vector2(-1,0));
             //batch.draw(currentFrameDown,isaac.getX(),isaac.getY(), 64 ,64);
         }
         if(keyboard.isShootUp  && isaac.attSpeedTemp <=0) {
+            isaac.hurt(1);
             isaac.shoot(new Vector2(0,1));
             //batch.draw(currentFrameDown,isaac.getX(),isaac.getY(), 64 ,64);
         }
 
+        if(isaac.heathResist !=0) {
+            isaac.heathResist --;
 
-        batch.draw(todraw,isaac.getX(),isaac.getY(), 64 ,64);
+        }
+        if (isaac.heathResist % 4 == 0) {
+            batch.draw(todraw,isaac.getX(),isaac.getY(), 64 ,64);
 
+            batch.draw(  todraw2   ,isaac.getX(),isaac.getY()+18, 64 ,64);
+
+
+
+        }
+        for (int i = 1; i <= isaac.heath; i+=2) {
+            if(isaac.currentheath>i){
+                batch.draw(  heath[0]   ,64+ ( i*34),650, 64 ,64);
+            }else if(isaac.currentheath<i){
+                batch.draw(  heath[2]   ,64+ ( i*34),650, 64 ,64);
+            }else {
+
+                batch.draw(  heath[1]   ,64+ ( i*34),650, 64 ,64);
+            }
+        }
 
 
         batch.end();
 
         batch.begin();
-        font.draw(batch, "U " +keyboard.isRunningUp +" D "+ keyboard.isRunningDown +" R "+ keyboard.isRunningRight +" L "+ keyboard.isRunningLeft+" S "+keyboard.isStay + " X" + isaac.getX() + " Y" + isaac.getY() + " AS " +isaac.attSpeedTemp, 10, 40);
+        font.draw(batch,  " X" + isaac.getX() + " Y" + isaac.getY() + " AS " +isaac.attSpeedTemp + " H"+isaac.currentheath+"/"+isaac.heath + " R"+isaac.heathResist, 10, 80);
+
+        font.draw(batch, "U " +keyboard.isRunningUp +" D "+ keyboard.isRunningDown +" R "+ keyboard.isRunningRight +" L "+ keyboard.isRunningLeft+" S "+keyboard.isStay  , 10, 40);
         batch.end();
+
     }
 
     @Override
@@ -199,7 +245,7 @@ public class IsaacRender implements Screen {
     public TextureRegion[] moveRight(){
 
         TextureRegion[][] tmp = TextureRegion.split(img, img.getWidth() / 8, img.getHeight() / 4);
-        test = new TextureRegion[4 * 8];
+        TextureRegion[] test = new TextureRegion[4 * 8];
         int index = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 8; j++) {
@@ -216,11 +262,27 @@ public class IsaacRender implements Screen {
 
     }
 
+    public TextureRegion[] heath(Texture texture){
+
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 5, texture.getHeight() / 2);
+        TextureRegion[] test = new TextureRegion[5 * 2];
+        int index = 0;
+        for (int i = 0; i < 2; i++) {
+            for (int j = 0; j < 5; j++) {
+                test[index++] = tmp[i][j];
+            }
+        }
+
+
+        return test;
+
+    }
+
 
     public TextureRegion[] moveDown(){
 
         TextureRegion[][] tmp = TextureRegion.split(img, img.getWidth() / 8, img.getHeight() / 4);
-        test = new TextureRegion[4 * 8];
+        TextureRegion[] test = new TextureRegion[4 * 8];
         int index = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 8; j++) {
@@ -237,6 +299,26 @@ public class IsaacRender implements Screen {
 
     }
 
+    public TextureRegion[] headFront(){
+
+        TextureRegion[][] tmp = TextureRegion.split(img, img.getWidth() / 8, img.getHeight() / 4);
+        TextureRegion[] test = new TextureRegion[4 * 8];
+        int index = 0;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 8; j++) {
+                test[index++] = tmp[i][j];
+            }
+        }
+        index = 0;
+        for (int i = 0; i < 2;i++){
+            HeadFront[index] = test[i];
+            index++;
+        }
+
+        return HeadFront;
+
+    }
+
 
 
 
@@ -244,7 +326,7 @@ public class IsaacRender implements Screen {
     public TextureRegion[] moveUp(){
 
         TextureRegion[][] tmp = TextureRegion.split(img, img.getWidth() / 8, img.getHeight() / 4);
-        test = new TextureRegion[4 * 8];
+        TextureRegion[] test = new TextureRegion[4 * 8];
         int index = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 8; j++) {
@@ -264,7 +346,7 @@ public class IsaacRender implements Screen {
     public TextureRegion[] stay (){
 
         TextureRegion[][] tmp = TextureRegion.split(img, img.getWidth() / 8, img.getHeight() / 4);
-        test = new TextureRegion[4 * 8];
+        TextureRegion[] test = new TextureRegion[4 * 8];
         int index = 0;
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 8; j++) {
