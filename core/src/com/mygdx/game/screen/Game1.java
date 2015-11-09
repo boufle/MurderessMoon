@@ -90,7 +90,7 @@ public class Game1 implements Screen {
         ui = new UI();
 
         //String host = ui.inputHost();
-        String host = "78.235.55.206";
+        String host = "localhost";
          try {
             client.connect(5000, host, Network.port ,Network.port  );
             // Server communication after connection can go here, or in Listener#connected().

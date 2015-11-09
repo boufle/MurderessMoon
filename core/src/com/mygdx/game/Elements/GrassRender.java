@@ -12,15 +12,15 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class GrassRender {
 
-     private SpriteBatch batch=null;
+    private SpriteBatch batch = null;
     private BitmapFont font;
 
-     private TextureRegion[] test=null;
+    private TextureRegion[] test = null;
 
     public GrassRender() {
         batch = new SpriteBatch();
         font = new BitmapFont();
-font.getData().setScale(0.75f,0.75f);
+        font.getData().setScale(0.75f, 0.75f);
         Texture img = new Texture("spirits\\rocks_basement.png");
         TextureRegion[][] tmp = TextureRegion.split(img, img.getWidth() / 4, img.getHeight() / 8);
         test = new TextureRegion[4 * 8];
@@ -34,15 +34,15 @@ font.getData().setScale(0.75f,0.75f);
     }
 
 
-    public  void render(  Grass grass) {
-       batch.begin();
-        if(grass.health>0){
-            batch.draw(test[1],grass.getY() ,grass.getX(), 64 ,64);
-        }else {
-            batch.draw(test[3],grass.getY() ,grass.getX(), 64 ,64);
+    public void render(Grass grass) {
+        batch.begin();
+        if (grass.health > 0) {
+            batch.draw(test[1], grass.getY(), grass.getX(), 64, 64);
+        } else {
+            batch.draw(test[3], grass.getY(), grass.getX(), 64, 64);
         }
 
-        font.draw(batch, "X" + grass.getX() + " Y" + grass.getY() +"H"+grass.health , grass.getY() , grass.getX()+32);
+        font.draw(batch, "X" + grass.getX() + " Y" + grass.getY() + "H" + grass.health, grass.getY(), grass.getX() + 32);
 
         batch.end();
     }
